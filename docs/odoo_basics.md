@@ -42,6 +42,34 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
   with letters, numbers, underscore.
 - Don't forget `__init__.py`
 
+#### Manifest File ####
+
+- only `name` (app name) is required
+- However, you should be careful to ensure all dependencies are
+  explicitly set in `depends`. The module will fail to install or
+  have loading errors if by chance the other required modules are
+  loaded afterward.
+
+
+### Dev Workflow ###
+
+1. Install the module
+2. After module installed, any changes in source code requires a
+   restart of the odoo instance. Because Odoo loads python code
+   only once.
+   
+   - `./odoo-bin -d todo -u todo_app`
+
+
+
+
+
+
+
+
+
+
+
 
 
 
