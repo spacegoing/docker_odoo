@@ -6,10 +6,16 @@ services:
       - db
     ports:
       - "8069:8069"
+      # Adding more ports only for debug usage
+      - "8070:8070"
+      - "8071:8071"
+      - "8072:8072"
+      - "8073:8073"
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
+      - ./log:/var/log/odoo/
   db:
     image: postgres:9.4
     environment:
