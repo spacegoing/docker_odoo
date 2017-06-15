@@ -25,7 +25,7 @@ RUN set -ex && buildDeps='build-essential libssl-dev libffi-dev python-dev' \
         && curl -o wkhtmltox.deb -SL http://nightly.odoo.com/extra/wkhtmltox-0.12.1.2_linux-jessie-amd64.deb \
         && echo '40e8b906de658a2221b15e4e8cd82565a47d7ee8 wkhtmltox.deb' | sha1sum -c - \
         && curl https://bootstrap.pypa.io/get-pip.py | python \
-        && pip install ipython \
+        && /usr/local/bin/pip2.7 install ipython \
         && dpkg --force-depends -i wkhtmltox.deb \
         && apt-get -y install -f --no-install-recommends \
         && apt-get purge -y --auto-remove $buildDeps -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false npm \
@@ -47,7 +47,6 @@ RUN set -ex; \
 COPY ./entrypoint.sh /
 COPY ./config/odoo.conf /etc/odoo/
 RUN chown odoo /etc/odoo/odoo.conf
-RUN chown odoo /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN mkdir -p /mnt/extra-addons \
@@ -62,6 +61,8 @@ ENV ODOO_RC /etc/odoo/odoo.conf
 
 # Set default user when running the container
 USER odoo
+
+RUN chown odoo /entrypoint.sh && chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["odoo"]
