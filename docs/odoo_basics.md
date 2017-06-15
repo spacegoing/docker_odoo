@@ -16,19 +16,6 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
 ~/odoo-dev/odoo/odoo-bin
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Developing ##
 
 ### Init Project ###
@@ -45,6 +32,7 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
 #### Manifest File ####
 
 - only `name` (app name) is required
+- `base` should be in `depends` when there is no other depends.
 - However, you should be careful to ensure all dependencies are
   explicitly set in `depends`. The module will fail to install or
   have loading errors if by chance the other required modules are
@@ -62,16 +50,40 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
 
 
 
+### Model Implementation ###
+
+#### Derive from odoo.models.Model ####
+
+- `_name` attribute defines the identifier that will be used
+  through Odoo to refer to this `model` (model means MVC's M, not
+  module). It will used by: 
+
+  - views(`.xml` file `res_model`)
+  
+  todo: The class name meanlingness to other modules? dev ess P
+  74
+
+- In order the addon knows the module, it must be loaded in the
+  `__init__.py`
+  
+  `from . import [**filename not _name, but then must use _name
+  to import in other .py modules**]`
+
+### View Implementation ###
+
+- how each file related to views?
+- Why no views even 3 records declared in todo_view.xml?
+- Each record belongs to which part?
 
 
+### Test ###
 
+- Odoo use `Unittest2` to offer test func. The test file should
+  start with `test_` and should be imported from
+  `tests/__init__.py`. But `tests` dir shouldn't be imported from
+  module's top `__init__.py`.
 
-
-
-
-
-
-
+- enable test: "odoo --db_host db --db_port 5432 --db_user odoo --db_password odoo -i todo_app --test-enable --xmlrpc-port=8070 --logfile=/var/log/odoo/odoo_inst1.log"
 
 
 
