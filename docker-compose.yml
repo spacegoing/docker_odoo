@@ -8,7 +8,8 @@ services:
       - "8069:8069"
       # Adding more ports only for debug usage
       - "8070:8070"
-      - "8071:8071"
+      # - "8071:8071" already been exposed by odoo
+      # Dockerfile, don't use
       - "8072:8072"
       - "8073:8073"
     volumes:
