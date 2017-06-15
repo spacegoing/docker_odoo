@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: odoo:latest
+    image: spacegoing/docker_odoo:latest
     depends_on:
       - db
     ports:
