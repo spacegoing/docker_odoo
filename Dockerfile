@@ -2,9 +2,15 @@ FROM debian:jessie
 ENV REFRESHED_AT 2017-06-15
 MAINTAINER spacegoing <spacegoing@github>
 
-# Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
-RUN set -ex; \
-        buildDeps='build-essential libssl-dev libffi-dev python-dev' \ # for ipython
+# This Dockerfile mainly copy from odoo's official docker file
+# but with ipdb ipython and pip>9.0+ installed
+
+# Install some deps, lessc and less-plugin-clean-css, and
+# wkhtmltopdf apt-get install python-pip \ this install pip 1.5
+# far outdated instead we installed pip 9.0+ directly from source.
+# As for ipython, we first install python-dev related packages
+# then build ipython.
+RUN set -ex && buildDeps='build-essential libssl-dev libffi-dev python-dev' \
         && apt-get update \
         && apt-get install -y --no-install-recommends \
             $buildDeps \
@@ -12,17 +18,17 @@ RUN set -ex; \
             curl \
             node-less \
             python-gevent \
-#            python-pip \ this install pip 1.5 far outdated
-            python-ipdb \ # add ipdb
+            python-ipdb \
             python-renderpm \
             python-support \
             python-watchdog \
         && curl -o wkhtmltox.deb -SL http://nightly.odoo.com/extra/wkhtmltox-0.12.1.2_linux-jessie-amd64.deb \
         && echo '40e8b906de658a2221b15e4e8cd82565a47d7ee8 wkhtmltox.deb' | sha1sum -c - \
-        && curl https://bootstrap.pypa.io/get-pip.py | python \ # install new python
+        && curl https://bootstrap.pypa.io/get-pip.py | python \
+        && pip install ipython \
         && dpkg --force-depends -i wkhtmltox.deb \
         && apt-get -y install -f --no-install-recommends \
-        && apt-get purge -y --auto-remove -o $buildDeps APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false npm \ # for ipython
+        && apt-get purge -y --auto-remove $buildDeps -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false npm \
         && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
         && pip install psycogreen==1.0
 
