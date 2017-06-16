@@ -4,5 +4,6 @@
     'application': True,
     'depends': ['base'],
     'author': 'hdwolf',
-    'data': ['views/todo_menu.xml','views/todo_view.xml']
+    'data': ['views/todo_menu.xml','views/todo_view.xml',
+    'security/ir.model.access.csv']
 }

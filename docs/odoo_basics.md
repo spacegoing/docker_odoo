@@ -75,6 +75,13 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
 - Why no views even 3 records declared in todo_view.xml?
 - Each record belongs to which part?
 
+### Controller Implementation ###
+
+- `do_clear_done` `@api.multi` raises error.
+
+
+
+
 
 ### Test ###
 

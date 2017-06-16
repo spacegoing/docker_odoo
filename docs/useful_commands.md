@@ -7,6 +7,7 @@
   - note: `-u` command can follow comma separated module names
     `todo_app,mail ...`
   
-- enable test: "odoo --db_host db --db_port 5432 --db_user odoo --db_password odoo -i todo_app --test-enable --xmlrpc-port=8070 --logfile=/var/log/odoo/odoo_inst1.log"
+- enable test: "odoo --db_host db --db_port 5432 -r odoo -w odoo -i todo_app --test-enable --xmlrpc-port=8070 --logfile=/var/log/odoo/odoo_inst1.log"
   
-  
+- enable test: "odoo --test-enable -i todo_app --log-level=test --db_host db --db_port 5432 --db_user odoo --db_password odoo --xmlrpc-port=8070 --logfile=stdout --stop-after-init"
+
