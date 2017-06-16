@@ -65,4 +65,4 @@ RUN chown odoo /entrypoint.sh && chmod +x /entrypoint.sh
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo"]
+# CMD ["odoo"]
