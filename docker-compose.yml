@@ -16,7 +16,12 @@ services:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
-      - ./log:/var/log/odoo/
+      - ./log:/var/log/odoo
+      - ./.bin:/my_bin
+    # Must. otherwise will shadow Dockerfile's ENV PATH
+    # which results there is no change to PATH
+    environment:
+      - PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/my_bin
     tty: true
   db:
     image: postgres:9.4

@@ -1,0 +1,2 @@
+#!/bin/bash
+odoo --db_host db --db_port 5432 --db_user odoo --db_password odoo --xmlrpc-port=8069 --log-level=info

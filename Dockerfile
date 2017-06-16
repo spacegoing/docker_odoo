@@ -43,10 +43,17 @@ RUN set -ex; \
         && apt-get -y install -f --no-install-recommends \
         && rm -rf /var/lib/apt/lists/* odoo.deb
 
-# Copy entrypoint script and Odoo configuration file
+# Copy entrypoint script
 COPY ./entrypoint.sh /
+# My Odoo configuration file
 COPY ./config/odoo.conf /etc/odoo/
-RUN chown odoo /etc/odoo/odoo.conf
+# My Odoo Helper bash commands
+RUN mkdir /my_bin
+COPY ./.bin/ /my_bin/
+# chown chmod of above files
+RUN chown odoo /entrypoint.sh && chmod +x /entrypoint.sh \
+    && chown odoo /etc/odoo/odoo.conf \
+    && chown -R odoo /my_bin && chmod -R 0777 /my_bin
 
 # Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN mkdir -p /mnt/extra-addons \
@@ -59,10 +66,11 @@ EXPOSE 8069 8071
 # Set the default config file
 ENV ODOO_RC /etc/odoo/odoo.conf
 
-RUN chown odoo /entrypoint.sh && chmod +x /entrypoint.sh
-
 # Set default user when running the container
 USER odoo
+
+# Can't directly `export PATH=$PATH:/my_bin/`
+ENV PATH "$PATH:/my_bin"
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
