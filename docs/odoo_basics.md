@@ -94,3 +94,38 @@ cd odoo-dev/odoo/setup/setup_dev.py setup_pg
 
 
 
+
+
+
+
+## Gotchas ##
+
+### CLI ###
+
+- `-u` `-i` must be used with `-d (database name)` to take effect
+- Somehow `dev=all,ipdb` doesn't take any effect in `.conf`. Have
+  to explicitly declared in command line
+
+
+### Test ###
+
+- [`demo database` **Must** be installed. Otherwise test wouldn't run](https://www.odoo.com/forum/help-1/question/why-my-test-yaml-do-not-run-42123)
+- https://github.com/camptocamp/pytest-odoo
+
+
+
+
+
+
+## Todo: ##
+
+### Docs ###
+
+- `@api.model`
+
+### Odoo shell ###
+
+- https://webkul.com/blog/beginner-guide-odoo-clicommand-line-interface/
+
+
+
