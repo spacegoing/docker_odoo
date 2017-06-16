@@ -17,6 +17,7 @@ services:
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
       - ./log:/var/log/odoo/
+    tty: true
   db:
     image: postgres:9.4
     environment:
