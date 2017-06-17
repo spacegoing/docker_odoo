@@ -23,9 +23,12 @@ set -e
 # check_config "db_user" "$USER"
 # check_config "db_password" "$PASSWORD"
 
-ln -s /etc/odoo /var/lib/odoo/config_odoo
-ln -s mnt/extra-addons /var/lib/odoo/extra-addons
-ln -s /usr/lib/python2.7/dist-packages/odoo /var/lib/odoo/src_odoo
+# todo: Bad implementation. recreate every login
+# -n will not already exists symlinks (otherwise will create symlink in those symlinks)
+# -f will override existing symlinks
+ln -snf /etc/odoo /var/lib/odoo/config_odoo
+ln -snf /mnt/extra-addons /var/lib/odoo/extra-addons
+ln -snf /usr/lib/python2.7/dist-packages/odoo /var/lib/odoo/src_odoo
 
 
 case "$1" in
