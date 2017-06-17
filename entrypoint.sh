@@ -23,6 +23,11 @@ set -e
 # check_config "db_user" "$USER"
 # check_config "db_password" "$PASSWORD"
 
+ln -s /etc/odoo /var/lib/odoo/config_odoo
+ln -s mnt/extra-addons /var/lib/odoo/extra-addons
+ln -s /usr/lib/python2.7/dist-packages/odoo /var/lib/odoo/src_odoo
+
+
 case "$1" in
     # -- | odoo)
     #     shift
