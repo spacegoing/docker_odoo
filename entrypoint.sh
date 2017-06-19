@@ -29,7 +29,8 @@ set -e
 ln -snf /etc/odoo /var/lib/odoo/config_odoo
 ln -snf /mnt/extra-addons /var/lib/odoo/extra-addons
 ln -snf /usr/lib/python2.7/dist-packages/odoo /var/lib/odoo/src_odoo
-
+ln -snf /var/lib/odoo/src_odoo/addons/point_of_sale/static/src/js /var/lib/odoo/pos_src_js
+ln -snf /var/lib/odoo/src_odoo/addons/point_of_sale /var/lib/odoo/pos_src
 
 case "$1" in
     # -- | odoo)
