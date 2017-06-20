@@ -35,7 +35,7 @@ RUN set -ex && buildDeps='build-essential libssl-dev libffi-dev python-dev' \
 # Install Odoo
 # No sha1sum check && echo '5d2fb0cc03fa0795a7b2186bb341caa74d372e82 odoo.deb' | sha1sum -c - \
 ENV ODOO_VERSION 10.0
-ENV ODOO_RELEASE latest
+ENV ODOO_RELEASE 20170615
 RUN set -ex; \
         curl -o odoo.deb -SL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && dpkg --force-depends -i odoo.deb \

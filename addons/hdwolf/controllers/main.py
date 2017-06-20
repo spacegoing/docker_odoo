@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import http
+from odoo.http import request
 from threading import Thread, Lock
 from Queue import Queue, Empty
 import time
@@ -37,13 +38,21 @@ class HDScanner(Thread):
 
     def run(self):
         self.barcodes.put((time.time(),"2100002000003"))
+        # FIXME: thread never ending
+        while True:
+            a=1
 
 scanner = HDScanner()
 
 class HDWOLF(http.Controller):
-    @http.route('/hdwolf', type='json', auth='none', cors='*')
+    @http.route('/hdwolf', type='http', auth='none', cors='*')
     def scanner(self):
-        return scanner.get_barcode()
+        return request.make_response(scanner.get_barcode(),{
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'text/html; charset=utf-8',
+            'Access-Control-Allow-Origin':  '*',
+            'Access-Control-Allow-Methods': 'GET',
+        })
 
 
 
