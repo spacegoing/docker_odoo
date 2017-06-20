@@ -14,6 +14,19 @@
 - docker ps
 - dbash (my private bash command) container_id [container_id]
 
+### spacemacs Usage ###
+
+Be sure you are at Emacs 25.2 with `docker-layer` installed.
+
+After `docker-compose up -d`
+
+- `SPC f f` to open `HELM Find Files`
+- Input `/docker:odoodocker_web_1:`, this will invoke `tramp`
+  using `docker ssh`. If success, helm should prompt
+  `/docker:odoodocker_web_1:/var/lib/odoo/` in popups. Enter that
+  directory 
+- There are symlinks defined in `./entrypoint.sh`
+
 ## Odoo Init ##
 
 - username, dbname, db password etc should all be `"db"`
@@ -27,10 +40,6 @@
 - `tapp_odoo`: test app. Takes 1 argument, a list of app names
   separated by `","`
 - `tlapp_odoo`: test app with log. Doesn't work yet
-
-
-
-
 
 
 

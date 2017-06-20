@@ -2,7 +2,7 @@
 
 ## Gotchas ##
 
-## Chapter2 ##
+### Chapter2 ###
 
 - Error: @api.model somehow raised exceptions in odoo10
 
@@ -14,6 +14,9 @@
           return True
   ```
 
+- In test_todo.py, it was `Todo.do_clear_done()`. So I suspect
+  that the `clear all done` button should be appeared in upper
+  layer rather than the create/edit layer
 
 ## Q&A ##
 
