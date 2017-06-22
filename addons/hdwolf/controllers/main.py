@@ -4,6 +4,10 @@ from odoo.http import request
 from threading import Thread, Lock
 from Queue import Queue, Empty
 import time
+import os
+import json
+
+dir_path = '/mnt/extra-addons/hdwolf/controllers/'
 
 
 class HDScanner(Thread):
@@ -11,7 +15,6 @@ class HDScanner(Thread):
         Thread.__init__(self)
         self.lock = Lock()
         self.barcodes = Queue()
-
 
     def lockedstart(self):
         with self.lock:
@@ -37,12 +40,20 @@ class HDScanner(Thread):
                 return ''
 
     def run(self):
-        self.barcodes.put((time.time(),"2100002000003"))
         # FIXME: thread never ending
         while True:
-            a=1
+            if 'hdwolfed.json' in os.listdir(dir_path):
+                with open(dir_path + 'hdwolfed.json', 'r') as f:
+                    barcodes = json.load(f)
+                os.remove(dir_path + 'hdwolfed.json')
+
+                for barcode in barcodes:
+                    sleep(1)
+                    self.barcodes.put((time.time(), barcode))
+
 
 scanner = HDScanner()
+
 
 class HDWOLF(http.Controller):
     @http.route('/hdwolf', type='json', auth='none', cors='*')
@@ -50,17 +61,16 @@ class HDWOLF(http.Controller):
         return scanner.get_barcode()
 
 
+# if __name__ == '__main__':
+#     import os
+#     import json
 
+#     # barcodes = ["6939656103169", "6924160712914", "6907992507095",
+#     #             "5012262010531", "5012262010159", "6932588551473"]
+#     # with open('hdwolfed.json','w') as f:
+#     #     json.dump(barcodes,f)
 
-
-
-
-
-
-
-
-
-
-
-
-
+#     if 'hdwolfed.json' in os.listdir('.'):
+#         with open('hdwolfed.json','r') as f:
+#             barcodes = json.load(f)
+#         os.remove('hdwolfed.json')
