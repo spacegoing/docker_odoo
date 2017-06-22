@@ -45,15 +45,6 @@ class HDScanner(Thread):
 scanner = HDScanner()
 
 class HDWOLF(http.Controller):
-    @http.route('/hdwolf', type='http', auth='none', cors='*')
-    def hello(self):
-        return request.make_response('hello',{
-            'Cache-Control': 'no-cache',
-            'Content-Type': 'text/html; charset=utf-8',
-            'Access-Control-Allow-Origin':  '*',
-            'Access-Control-Allow-Methods': 'POST',
-            })
-
     @http.route('/hdwolf', type='json', auth='none', cors='*')
     def scanner(self):
         return scanner.get_barcode()
