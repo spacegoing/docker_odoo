@@ -12,15 +12,16 @@ odoo.define('todo_user', function(require) {
         use_cors: true
     });
 
-    connection.rpc('', {}, {
-            timeout: 500
-        })
-        .then(function(barcode) {
-            alert(core._t(barcode));
-        }, function() {
-            alert(core._t('something wrong'));
-        });
-
+    for (var i = 0; i < 10; i++) {
+        connection.rpc('', {}, {
+                timeout: 7500
+            })
+            .then(function(barcode) {
+                console.log(barcode);
+            }, function() {
+                console.log(arguments);
+            });
+    }
 });
 
 
