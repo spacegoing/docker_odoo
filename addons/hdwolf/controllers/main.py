@@ -8,57 +8,42 @@ from time import sleep
 import os
 import json
 
-dir_path = '/mnt/extra-addons/hdwolf/controllers/'
-# dir_path = './'
-
-class HDScanner(Thread):
-    def __init__(self):
-        Thread.__init__(self)
-        self.lock = Lock()
-        self.barcodes = Queue()
-
-        self.daemon = True
-        self.start()
+lock = Lock()
+Barcodes = Queue()
 
 
-    # def lockedstart(self):
-    #     with self.lock:
-    #         if not self.isAlive():
-    #             self.daemon = True
-    #             self.start()
+def get_barcode():
+    """
+    Returns a scanned barcode. Will wait at most 5 seconds to get a barcode,
+    and will return barcode scanned in the past if they are not older than 5
+    seconds and have not been returned before. This is necessary to catch
+    barcodes scanned while the POS is busy reading another barcode
+    """
 
-    def get_barcode(self):
-        """
-        Returns a scanned barcode. Will wait at most 5 seconds to get a barcode,
-        and will return barcode scanned in the past if they are not older than 5
-        seconds and have not been returned before. This is necessary to catch
-        barcodes scanned while the POS is busy reading another barcode
-        """
+    # self.lockedstart()
 
-        # self.lockedstart()
+    while True:
+        try:
+            timestamp, barcode = Barcodes.get(True, 5)
+            # print barcode
+            return barcode
+        except Empty:
+            # print id(Barcodes)
+            return ''
 
-        while True:
-            try:
-                timestamp, barcode = self.barcodes.get(True, 5)
-                if timestamp > time.time() - 5:
-                    return barcode
-            except Empty:
-                return ''
 
-    def run(self):
-        while True:
-            # FIXME: thread never ending
-            if 'hdwolfed.json' in os.listdir(dir_path):
-                with open(dir_path + 'hdwolfed.json', 'r') as f:
-                    barcodes = json.load(f)
-                os.remove(dir_path + 'hdwolfed.json')
+def put_barcode(barcodes):
+    for barcode in barcodes:
+        Barcodes.put((time.time(), barcode))
 
-                for barcode in barcodes:
-                    self.barcodes.put((time.time(), barcode))
-
-scanner = HDScanner()
+    print id(Barcodes)
 
 class HDWOLF(http.Controller):
     @http.route('/hdwolf', type='json', auth='none', cors='*')
     def scanner(self):
-        return scanner.get_barcode()
+        return get_barcode()
+
+    @http.route('/hdwolf/put', type='json', auth='none', cors='*')
+    def wolf(self, barcodes):
+        put_barcode(barcodes)
+        return 'hdwolf_app_success!'
