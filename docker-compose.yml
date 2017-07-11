@@ -18,6 +18,7 @@ services:
       - ./addons:/mnt/extra-addons
       - ./log:/var/log/odoo
       - ./.bin:/my_bin
+      - ./addons/hdwolf/js:/usr/lib/python2.7/dist-packages/odoo/addons/point_of_sale/static/src/js
     # Must. otherwise will shadow Dockerfile's ENV PATH
     # which results there is no change to PATH
     environment:
