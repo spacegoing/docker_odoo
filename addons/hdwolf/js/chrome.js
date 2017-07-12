@@ -528,25 +528,27 @@ odoo.define('point_of_sale.chrome', function(require) {
 
                     // last orderline
                     let last_orderline = del_prod_list[del_prod_list.length - 1];
-                    self.screens.products.order_widget.
-                    click_line(last_orderline);
+                    if (last_orderline) {
+                        self.screens.products.order_widget.
+                        click_line(last_orderline);
 
-                    // change_selected_order (called by click_line) will call
-                    // numpad_state.reset(); which will set state.buffer='0'
-                    // Therefore, if deleteLastChar() is not called twice
-                    // simultaneously, .get('buffer') will always return '0'
-                    // in deleteLastChar(), orderline will never be removed.
-                    // The following is workaround:
-                    if (last_orderline.quantity === 1) {
-                        self.screens.products.numpad.state.deleteLastChar();
-                        self.screens.products.numpad.state.deleteLastChar();
-                    } else {
-                        let newChar = String(last_orderline.quantity - 1);
-                        self.screens.products.numpad.state.deleteLastChar();
-                        self.screens.products.numpad.state
-                            .appendNewChar(newChar);
-                    }
-                    // self.screens.products.numpad.state.deleteLastChar();
+                        // change_selected_order (called by click_line) will call
+                        // numpad_state.reset(); which will set state.buffer='0'
+                        // Therefore, if deleteLastChar() is not called twice
+                        // simultaneously, .get('buffer') will always return '0'
+                        // in deleteLastChar(), orderline will never be removed.
+                        // The following is workaround:
+                        if (last_orderline.quantity === 1) {
+                            self.screens.products.numpad.state.deleteLastChar();
+                            self.screens.products.numpad.state.deleteLastChar();
+                        } else {
+                            let newChar = String(last_orderline.quantity - 1);
+                            self.screens.products.numpad.state.deleteLastChar();
+                            self.screens.products.numpad.state
+                                .appendNewChar(newChar);
+                        }
+                        // self.screens.products.numpad.state.deleteLastChar();
+                    };
                 }
             }
 
@@ -604,15 +606,15 @@ odoo.define('point_of_sale.chrome', function(require) {
 
                 function waitforbarcode_go_discount() {
                     return self.pos.proxy.connection_wolf.rpc('/go_discount', {}, {
-                        timeout: 7500
-                    })
+                            timeout: 7500
+                        })
                         .then(function(barcodes) {
-                            wolf_go_discount(barcodes);
-                            waitforbarcode_go_discount();
-                        },
-                              function() {
-                                  setTimeout(waitforbarcode_go_discount, 5000);
-                              });
+                                wolf_go_discount(barcodes);
+                                waitforbarcode_go_discount();
+                            },
+                            function() {
+                                setTimeout(waitforbarcode_go_discount, 5000);
+                            });
                 }
                 waitforbarcode_go_discount();
 
