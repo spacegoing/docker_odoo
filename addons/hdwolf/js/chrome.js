@@ -487,12 +487,25 @@ var Chrome = PosBaseWidget.extend({
                           del_prod_list.push(item);
                       }
                   });
+                  let last_orderline = del_prod_list[del_prod_list.length-1];
                   self.screens.products.order_widget.
-                      click_line(del_prod_list[del_prod_list.length-1]);
+                      click_line(last_orderline);
 
-                  // let delete_button = $('#wolf_go');
-                  self.screens.products.numpad.state.deleteLastChar();
-                  self.screens.products.numpad.state.deleteLastChar();
+                  // change_selected_order (called by click_line) will call
+                  // numpad_state.reset(); which will set state.buffer='0'
+                  // Therefore, if deleteLastChar() is not called twice
+                  // simultaneously, .get('buffer') will always return '0'
+                  // in deleteLastChar(), orderline will never be removed.
+                  // The following is workaround:
+                  if(last_orderline.quantity === 1){
+                      self.screens.products.numpad.state.deleteLastChar();
+                      self.screens.products.numpad.state.deleteLastChar();
+                  }else{
+                      self.screens.products.numpad.state.deleteLastChar();
+                  }
+
+
+                  // self.screens.products.numpad.state.deleteLastChar();
             }
         }
 
