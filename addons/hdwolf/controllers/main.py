@@ -10,7 +10,7 @@ import json
 
 lock = Lock()
 Barcodes = Queue()
-DelProdNames = Queue()
+DelProdBarcodes = Queue()
 
 
 def get_barcode():
@@ -39,7 +39,7 @@ def put_barcode(barcodes):
 
     # print id(Barcodes)
 
-def get_del_prod_name():
+def get_del_prod_barcode():
     """
     Returns a scanned barcode. Will wait at most 5 seconds to get a barcode,
     and will return barcode scanned in the past if they are not older than 5
@@ -51,16 +51,16 @@ def get_del_prod_name():
 
     while True:
         try:
-            timestamp, prod_name = DelProdNames.get(True, 5)
+            timestamp, prod_barcode = DelProdBarcodes.get(True, 5)
             # print barcode
-            return prod_name
+            return prod_barcode
         except Empty:
             # print id(Barcodes)
             return ''
 
 
-def put_del_prod_name(del_prod_name):
-    DelProdNames.put((time.time(), del_prod_name))
+def put_del_prod_barcode(del_prod_barcode):
+    DelProdBarcodes.put((time.time(), del_prod_barcode))
     # print id(Barcodes)
 
 
@@ -74,11 +74,11 @@ class HDWOLF(http.Controller):
         put_barcode(barcodes)
         return 'hdwolf_app_success!'
 
-    @http.route('/hdwolf/go', type='json', auth='none', cors='*')
-    def go(self):
-        return get_del_prod_name()
+    @http.route('/hdwolf/go_deduct', type='json', auth='none', cors='*')
+    def go_deduct(self):
+        return get_del_prod_barcode()
 
-    @http.route('/hdwolf/put_go', type='json', auth='none', cors='*')
-    def put_go(self, del_prod_name):
-        put_del_prod_name(del_prod_name)
+    @http.route('/hdwolf/put_go_deduct', type='json', auth='none', cors='*')
+    def put_go(self, del_prod_barcode):
+        put_del_prod_barcode(del_prod_barcode)
         return 'Go_success!'
