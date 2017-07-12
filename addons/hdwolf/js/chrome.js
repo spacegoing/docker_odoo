@@ -501,10 +501,11 @@ var Chrome = PosBaseWidget.extend({
                       self.screens.products.numpad.state.deleteLastChar();
                       self.screens.products.numpad.state.deleteLastChar();
                   }else{
+                      let newChar = String(last_orderline.quantity-1);
                       self.screens.products.numpad.state.deleteLastChar();
+                      self.screens.products.numpad.state
+                          .appendNewChar(newChar);
                   }
-
-
                   // self.screens.products.numpad.state.deleteLastChar();
             }
         }
