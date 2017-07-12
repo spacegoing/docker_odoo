@@ -550,6 +550,34 @@ odoo.define('point_of_sale.chrome', function(require) {
                 }
             }
 
+            function wolf_go_discount(barcodes) {
+                if (barcodes) {
+                    // barcode = 'suki bakery 进口酸奶粉原味230g新西兰原装';
+
+                    // Select all prod orderlines
+                    let orderlines = self.pos.get_order().orderlines;
+
+                    orderlines.models.forEach(function(item, index, models) {
+                        // Clear all discounts
+                        self.screens.products.order_widget.click_line(item);
+
+                        // Must be changed after click_line() which will reset state
+                        self.screens.products.numpad.state.changeMode('discount');
+                        self.screens.products.numpad.state.deleteLastChar();
+                        self.screens.products.numpad.state.deleteLastChar();
+                        self.screens.products.numpad.state.deleteLastChar();
+
+                        // Set discount to 20%
+                        if (barcodes.includes(item.product.barcode)) {
+                            self.screens.products.numpad.state.appendNewChar('2');
+                            self.screens.products.numpad.state.appendNewChar('0');
+                        }
+                        self.screens.products.numpad.state.changeMode('quantity');
+                    });
+
+                }
+            }
+
             this.pos.ready.done(function() {
                 self.build_chrome();
                 self.build_widgets();
@@ -573,6 +601,21 @@ odoo.define('point_of_sale.chrome', function(require) {
                             });
                 }
                 waitforbarcode_go_deduct();
+
+                function waitforbarcode_go_discount() {
+                    return self.pos.proxy.connection_wolf.rpc('/go_discount', {}, {
+                        timeout: 7500
+                    })
+                        .then(function(barcodes) {
+                            wolf_go_discount(barcodes);
+                            waitforbarcode_go_discount();
+                        },
+                              function() {
+                                  setTimeout(waitforbarcode_go_discount, 5000);
+                              });
+                }
+                waitforbarcode_go_discount();
+
             }).fail(function(err) { // error when loading models data from the backend
                 self.loading_error(err);
             });
