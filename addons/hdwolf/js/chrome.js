@@ -594,21 +594,16 @@ odoo.define('point_of_sale.chrome', function(require) {
                     use_cors: true
                 });
 
-                let barcode_id_map = {
-                    "156": "6925253944014",
-                    "153": "9400564020420",
-                    "162": "5012262010113",
-                    "164": "5012262010143",
-                    "154": "8809022200885",
-                    "160": "6948939610782",
-                    "161": "5012262010123",
-                    "163": "5012262010133",
-                    "155": "4710944700138",
-                    "158": "6901236300732",
-                    "157": "5012262010531",
-                    "159": "5012262010173",
-                    "152": "6932588551473"
-                };
+                function click_product(barcode) {
+                    let product_list = self.gui.screen_instances.products.product_list_widget.product_list;
+                    product_list.forEach(function(item, index, models) {
+                        if (item.barcode === barcode) {
+                            let str_id = String(item.id);
+                            let product = self.pos.db.get_product_by_id(str_id);
+                            self.gui.screen_instances.products.click_product(product);
+                        }
+                    });
+                }
 
                 function waitforbarcode_hdwolf() {
                     return self.connection_wolf.rpc('', {}, {
@@ -619,7 +614,7 @@ odoo.define('point_of_sale.chrome', function(require) {
                                 //     self.remote_active = 0;
                                 //     return;
                                 // }
-                                self.scan(barcode);
+                                click_product(barcode);
                                 waitforbarcode_hdwolf();
                             },
                             function() {
