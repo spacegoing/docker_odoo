@@ -152,9 +152,6 @@ var ProxyDevice  = core.Class.extend(core.mixins.PropertiesMixin,{
     connect: function(url){
         var self = this;
         this.connection = new Session(undefined,url, { use_cors: true});
-        this.connection_wolf = new Session(undefined, "/hdwolf", {
-            use_cors: true
-        });
         this.host   = url;
         this.set_connection_status('connecting',{});
 
@@ -580,26 +577,7 @@ var BarcodeReader = core.Class.extend({
                 });
         }
         waitforbarcode();
-        function waitforbarcode_hdwolf(){
-            return self.proxy.connection_wolf.rpc('',{},{timeout:7500})
-                .then(function(barcode){
-                    // if(!self.remote_scanning){
-                    //     self.remote_active = 0;
-                    //     return;
-                    // }
-                    self.scan(barcode);
-                    waitforbarcode_hdwolf();
-                },
-                      function(){
-                          // if(!self.remote_scanning){
-                          //     self.remote_active = 0;
-                          //     return;
-                          // }
-                          setTimeout(waitforbarcode_hdwolf,5000);
-                      });
-        }
-        waitforbarcode_hdwolf();
- 
+
     },
 
     // the barcode scanner will stop listening on the hw_proxy/scanner remote interface

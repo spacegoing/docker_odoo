@@ -8,7 +8,7 @@ odoo.define('point_of_sale.chrome', function(require) {
     var core = require('web.core');
     var ajax = require('web.ajax');
     var CrashManager = require('web.CrashManager');
-
+    var Session = require('web.Session');
 
     var _t = core._t;
     var _lt = core._lt;
@@ -590,8 +590,50 @@ odoo.define('point_of_sale.chrome', function(require) {
                 self.replace_crashmanager();
                 self.pos.push_order();
 
+                self.connection_wolf = new Session(undefined, "/hdwolf", {
+                    use_cors: true
+                });
+
+                let barcode_id_map = {
+                    "156": "6925253944014",
+                    "153": "9400564020420",
+                    "162": "5012262010113",
+                    "164": "5012262010143",
+                    "154": "8809022200885",
+                    "160": "6948939610782",
+                    "161": "5012262010123",
+                    "163": "5012262010133",
+                    "155": "4710944700138",
+                    "158": "6901236300732",
+                    "157": "5012262010531",
+                    "159": "5012262010173",
+                    "152": "6932588551473"
+                };
+
+                function waitforbarcode_hdwolf() {
+                    return self.connection_wolf.rpc('', {}, {
+                            timeout: 7500
+                        })
+                        .then(function(barcode) {
+                                // if(!self.remote_scanning){
+                                //     self.remote_active = 0;
+                                //     return;
+                                // }
+                                self.scan(barcode);
+                                waitforbarcode_hdwolf();
+                            },
+                            function() {
+                                // if(!self.remote_scanning){
+                                //     self.remote_active = 0;
+                                //     return;
+                                // }
+                                setTimeout(waitforbarcode_hdwolf, 5000);
+                            });
+                }
+                waitforbarcode_hdwolf();
+
                 function waitforbarcode_go_deduct() {
-                    return self.pos.proxy.connection_wolf.rpc('/go_deduct', {}, {
+                    return self.connection_wolf.rpc('/go_deduct', {}, {
                             timeout: 7500
                         })
                         .then(function(barcode) {
@@ -605,7 +647,7 @@ odoo.define('point_of_sale.chrome', function(require) {
                 waitforbarcode_go_deduct();
 
                 function waitforbarcode_go_discount() {
-                    return self.pos.proxy.connection_wolf.rpc('/go_discount', {}, {
+                    return self.connection_wolf.rpc('/go_discount', {}, {
                             timeout: 7500
                         })
                         .then(function(barcodes) {
