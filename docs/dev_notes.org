@@ -1,0 +1,55 @@
+* Odoo Docker Dev Notes
+
+** Docker
+
+*** Backup & Restore
+- https://stackoverflow.com/questions/38298645/how-should-i-backup-restore-docker-named-volumes
+
+#+BEGIN_SRC markdown
+  Actually it should be done same way as written in official
+  documentation. Data volume container stores it's data in "virtual
+  root", so you should backup with next command:
+
+      docker run --rm \ 
+        --volume [DOCKER_COMPOSE_PREFIX]_[VOLUME_NAME]:/[TEMPORARY_DIRECTORY_TO_STORE_VOLUME_DATA] \
+        --volume $(pwd):/[TEMPORARY_DIRECTORY_TO_STORE_BACKUP_FILE] \
+        ubuntu \
+        tar cvf /[TEMPORARY_DIRECTORY_TO_STORE_BACKUP_FILE]/[BACKUP_FILENAME].tar /[TEMPORARY_DIRECTORY_TO_STORE_VOLUME_DATA]
+
+  where:
+
+   - **--rm** means that the image created for this run command
+     will be cleaned up
+   - **DOCKER_COMPOSE_PREFIX** in default is your project directory name
+   - **VOLUME_NAME** is the data-volume container name from compose file
+   - **TEMPORARY_DIRECTORY_TO_STORE_VOLUME_DATA** is a directory to mount your volume data
+   - **TEMPORARY_DIRECTORY_TO_STORE_BACKUP_FILE** is a directory virtually mapped to your current directory, where the backup will be placed
+   - **BACKUP_FILENAME** - a name of backup file (you find it in current directory)
+   - **ubuntu** - you may change image type to another container with tar :)
+
+  Get data back into the volume(restore):
+
+      docker run --rm \ 
+        --volume [DOCKER_COMPOSE_PREFIX]_[VOLUME_NAME]:/[TEMPORARY_DIRECTORY_STORING_EXTRACTED_BACKUP] \
+        --volume $(pwd):/[TEMPORARY_DIRECTORY_TO_STORE_BACKUP_FILE] \
+        ubuntu \
+        tar xvf /[TEMPORARY_DIRECTORY_TO_STORE_BACKUP_FILE]/[BACKUP_FILENAME].tar -C /[TEMPORARY_DIRECTORY_STORING_EXTRACTED_BACKUP] --strip 1
+
+
+  where:
+
+   - **TEMPORARY_DIRECTORY_STORING_EXTRACTED_BACKUP** is a
+     directory where the extracted files will be copied to (this is
+     linked with the volume and will therefore write to it)
+   - **-C** - tell tar where to extract the contents
+   - **--strip 1** - remove leading path elements (e.g. the parent directory if the backup contents are located in a /temp folder or similar)
+#+END_SRC
+
+*Gotcha*
+
+This is the best solution I have found, but it is important to
+know that the permissions to access the data could change from
+container to container if custom (non-root) users are used inside
+the containers. Be careful with this. – AFP_555 Dec 29 '17 at
+15:27
+
