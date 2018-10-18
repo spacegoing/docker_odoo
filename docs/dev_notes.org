@@ -53,3 +53,25 @@ container to container if custom (non-root) users are used inside
 the containers. Be careful with this. – AFP_555 Dec 29 '17 at
 15:27
 
+*Workaround*
+
+Do not use ~--strip 1~ as the answer.
+Directly uncompress to ~/~. So the ~User~ ~Group~ and ~Mode~ will
+be correct. Otherwise the top level dir ~volume_data~ will have
+~root root~ group and user and the ~Mode~ will also be wrong
+
+Therefore, when restore volumes, directly uncompress to parent
+dir without ~--strip 1~ option.
+#+BEGIN_SRC bash
+docker run -itd \
+  --volume docker_odoo_odoo-web-data0:/volume_data \
+  --volume $(pwd)/backup:/backup \
+  ubuntu \
+  tar xvf /backup/docker_odoo_odoo-web-data_backup.tar -C /
+
+docker run -itd \
+  --volume docker_odoo_odoo-db-data0:/volume_data \
+  --volume $(pwd)/backup:/backup \
+  ubuntu \
+  tar xvf /backup/docker_odoo_odoo-db-data_backup.tar -C /
+#+END_SRC
